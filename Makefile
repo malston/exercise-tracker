@@ -59,13 +59,19 @@ format:
 		echo "⚠️  Prettier not installed. Run: npm install --save-dev prettier"; \
 	fi
 
-# Preview the sample import file
+# Preview the sample import files
 preview-import:
-	@if [ -f workout-import.json ]; then \
-		echo "📄 Sample import file (first 50 lines):"; \
-		head -n 50 workout-import.json; \
+	@if [ -d sample-imports ]; then \
+		echo "📄 Available sample import files:"; \
+		echo ""; \
+		ls -1 sample-imports/*.{csv,json,xml} 2>/dev/null | while read file; do \
+			echo "=== $$file ==="; \
+			head -n 20 "$$file"; \
+			echo ""; \
+		done; \
+		echo "📖 See sample-imports/README.md for format documentation"; \
 	else \
-		echo "⚠️  No workout-import.json file found"; \
+		echo "⚠️  No sample-imports directory found"; \
 	fi
 
 # Development workflow shortcuts
