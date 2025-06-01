@@ -104,6 +104,14 @@ Morning Run,cardio,2024-01-06,,30,5.5,Great weather
 </exercises>
 ```
 
+## Sample Import Files
+
+Example import files are available in the `sample-imports/` directory:
+- `exercises-sample.csv` - CSV format example
+- `exercises-sample.json` - JSON format example  
+- `exercises-sample.xml` - XML format example
+- `README.md` - Detailed format documentation
+
 ## Available Commands
 
 This project includes a Makefile for common tasks:
