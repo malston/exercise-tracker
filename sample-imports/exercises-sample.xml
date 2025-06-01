@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercises>
+  <exercise>
+    <name>Bench Press</name>
+    <category>strength</category>
+    <date>2024-01-15</date>
+    <sets>
+      <set>
+        <reps>10</reps>
+        <weight>60</weight>
+        <restTime>90</restTime>
+      </set>
+      <set>
+        <reps>10</reps>
+        <weight>60</weight>
+        <restTime>90</restTime>
+      </set>
+      <set>
+        <reps>10</reps>
+        <weight>60</weight>
+        <restTime>120</restTime>
+      </set>
+    </sets>
+    <notes>Good form throughout</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Incline Dumbbell Press</name>
+    <category>strength</category>
+    <date>2024-01-15</date>
+    <sets>
+      <set>
+        <reps>12</reps>
+        <weight>25</weight>
+      </set>
+      <set>
+        <reps>12</reps>
+        <weight>25</weight>
+      </set>
+      <set>
+        <reps>12</reps>
+        <weight>25</weight>
+      </set>
+    </sets>
+    <notes>Felt strong</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Morning Run</name>
+    <category>cardio</category>
+    <date>2024-01-16</date>
+    <duration>30</duration>
+    <distance>5.5</distance>
+    <notes>Beautiful weather</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Interval Sprints</name>
+    <category>cardio</category>
+    <date>2024-01-16</date>
+    <duration>20</duration>
+    <distance>2.5</distance>
+    <notes>High intensity intervals</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Yoga Flow</name>
+    <category>flexibility</category>
+    <date>2024-01-17</date>
+    <duration>45</duration>
+    <notes>Focus on breathing</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Squats</name>
+    <category>strength</category>
+    <date>2024-01-18</date>
+    <sets>
+      <set>
+        <reps>8</reps>
+        <weight>80</weight>
+      </set>
+      <set>
+        <reps>8</reps>
+        <weight>80</weight>
+      </set>
+      <set>
+        <reps>8</reps>
+        <weight>80</weight>
+      </set>
+      <set>
+        <reps>8</reps>
+        <weight>80</weight>
+      </set>
+    </sets>
+    <notes>Deep squats with pause</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Deadlifts</name>
+    <category>strength</category>
+    <date>2024-01-18</date>
+    <sets>
+      <set>
+        <reps>5</reps>
+        <weight>100</weight>
+      </set>
+      <set>
+        <reps>5</reps>
+        <weight>100</weight>
+      </set>
+      <set>
+        <reps>5</reps>
+        <weight>100</weight>
+      </set>
+    </sets>
+    <notes>Personal record!</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Cycling</name>
+    <category>cardio</category>
+    <date>2024-01-19</date>
+    <duration>60</duration>
+    <distance>25</distance>
+    <notes>Moderate pace</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Pull-ups</name>
+    <category>strength</category>
+    <date>2024-01-20</date>
+    <sets>
+      <set>
+        <reps>8</reps>
+      </set>
+      <set>
+        <reps>8</reps>
+      </set>
+      <set>
+        <reps>8</reps>
+      </set>
+      <set>
+        <reps>8</reps>
+      </set>
+    </sets>
+    <notes>Bodyweight only</notes>
+  </exercise>
+  
+  <exercise>
+    <name>Pilates Core</name>
+    <category>balance</category>
+    <date>2024-01-21</date>
+    <duration>30</duration>
+    <notes>Core stability focus</notes>
+  </exercise>
+</exercises>
