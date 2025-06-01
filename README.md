@@ -1,36 +1,190 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Exercise Tracker
+
+A modern web application for tracking workouts and monitoring fitness progress. Built with Next.js 15, TypeScript, and Tailwind CSS.
+
+## Features
+
+- **Exercise Logging**: Track various types of exercises including strength training, cardio, flexibility, and more
+- **Smart Forms**: Dynamic forms that adapt based on exercise type (sets/reps for strength, duration/distance for cardio)
+- **Data Import**: Bulk import exercises from CSV, JSON, or XML files
+- **Local Storage**: All data is saved locally in your browser
+- **Dark Mode**: Automatic dark mode support
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd exercise-tracker
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+make install
+# or
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Start the development server:
+```bash
+make dev
+# or
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Adding Exercises Manually
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Click the "+ Add Exercise" button
+2. Fill in the exercise details:
+   - **Name**: Exercise name (e.g., "Bench Press", "Morning Run")
+   - **Category**: Select from strength, cardio, flexibility, balance, sports, or other
+   - **Additional fields**: Based on category (sets/reps/weight for strength, duration/distance for cardio)
+3. Click "Add Exercise" to save
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Importing Exercises
 
-## Deploy on Vercel
+1. Click the "📁 Import Exercises" button
+2. Select a file in CSV, JSON, or XML format
+3. Review the preview of exercises to be imported
+4. Click "Import" to add them to your exercise history
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Import File Formats
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**CSV Format:**
+```csv
+name,category,date,sets,duration,distance,notes
+Bench Press,strength,2024-01-06,3x10@60kg,,,Felt strong today
+Morning Run,cardio,2024-01-06,,30,5.5,Great weather
+```
+
+**JSON Format:**
+```json
+[
+  {
+    "name": "Bench Press",
+    "category": "strength",
+    "date": "2024-01-06",
+    "sets": [
+      { "reps": 10, "weight": 60 },
+      { "reps": 10, "weight": 60 },
+      { "reps": 10, "weight": 60 }
+    ],
+    "notes": "Felt strong today"
+  }
+]
+```
+
+**XML Format:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<exercises>
+  <exercise>
+    <name>Bench Press</name>
+    <category>strength</category>
+    <date>2024-01-06</date>
+    <sets>
+      <set>
+        <reps>10</reps>
+        <weight>60</weight>
+      </set>
+    </sets>
+  </exercise>
+</exercises>
+```
+
+## Available Commands
+
+This project includes a Makefile for common tasks:
+
+```bash
+make help          # Show all available commands
+make dev           # Start development server
+make build         # Build for production
+make start         # Start production server
+make lint          # Run ESLint
+make type-check    # Run TypeScript type checking
+make test          # Run all checks (lint + type-check)
+make clean         # Clean build artifacts
+make format        # Format code with Prettier (if installed)
+```
+
+## Project Structure
+
+```
+exercise-tracker/
+├── app/                    # Next.js app directory
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Main page component
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── ExerciseForm.tsx   # Form for adding exercises
+│   ├── ExerciseList.tsx   # Display exercise history
+│   └── ImportExercises.tsx # Import exercises from files
+├── types/                 # TypeScript type definitions
+│   └── exercise.ts        # Exercise data models
+├── utils/                 # Utility functions
+│   └── parsers.ts         # File parsing utilities
+├── hooks/                 # Custom React hooks
+│   └── useLocalStorage.ts # Local storage hook
+└── public/                # Static assets
+```
+
+## Data Model
+
+### Exercise Types
+
+- **Strength**: Tracks sets, reps, and weight
+- **Cardio**: Tracks duration and distance
+- **Flexibility**: Tracks duration
+- **Balance**: Tracks duration
+- **Sports**: Tracks duration
+- **Other**: Flexible tracking
+
+### Storage
+
+All exercise data is stored in the browser's local storage under the key `exercises`. Data persists between sessions but is specific to each browser/device.
+
+## Development
+
+### Running Tests
+
+```bash
+make test  # Run linting and type checking
+```
+
+### Building for Production
+
+```bash
+make build
+make start
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Icons from native emoji# exercise-tracker
