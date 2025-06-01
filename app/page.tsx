@@ -1,103 +1,170 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { Exercise, Workout } from '@/types/exercise';
+import ExerciseForm from '@/components/ExerciseForm';
+import ExerciseList from '@/components/ExerciseList';
+import ImportExercises from '@/components/ImportExercises';
+import WorkoutForm from '@/components/WorkoutForm';
+import WorkoutList from '@/components/WorkoutList';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [exercises, setExercises] = useLocalStorage<Exercise[]>('exercises', []);
+  const [workouts, setWorkouts] = useLocalStorage<Workout[]>('workouts', []);
+  const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [showWorkoutForm, setShowWorkoutForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<'exercises' | 'workouts'>('exercises');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleAddExercise = (exerciseData: Omit<Exercise, 'id'>) => {
+    const newExercise: Exercise = {
+      ...exerciseData,
+      id: Date.now().toString(),
+    };
+    setExercises([newExercise, ...exercises]);
+    setShowForm(false);
+  };
+
+  const handleDeleteExercise = (id: string) => {
+    setExercises(exercises.filter(exercise => exercise.id !== id));
+  };
+
+  const handleImportExercises = (importedExercises: Omit<Exercise, 'id'>[]) => {
+    const newExercises: Exercise[] = importedExercises.map(exercise => ({
+      ...exercise,
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
+    }));
+    setExercises([...newExercises, ...exercises]);
+    setShowImport(false);
+  };
+
+  const handleAddWorkout = (workoutData: Omit<Workout, 'id'>) => {
+    const newWorkout: Workout = {
+      ...workoutData,
+      id: Date.now().toString(),
+    };
+    setWorkouts([newWorkout, ...workouts]);
+    setShowWorkoutForm(false);
+  };
+
+  const handleDeleteWorkout = (id: string) => {
+    setWorkouts(workouts.filter(workout => workout.id !== id));
+  };
+
+  const handleStartWorkout = (template: Workout) => {
+    // Create a new workout from template
+    const newWorkout: Omit<Workout, 'id'> = {
+      ...template,
+      date: new Date().toISOString(),
+      isTemplate: false,
+    };
+    handleAddWorkout(newWorkout);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Exercise Tracker
+          </h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            Track your workouts and monitor your fitness progress
+          </p>
+        </header>
+
+        {/* Tab Navigation */}
+        <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 mb-6">
+          <button
+            onClick={() => setActiveTab('exercises')}
+            className={`pb-2 px-1 font-medium transition-colors ${
+              activeTab === 'exercises'
+                ? 'text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            }`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Exercises
+          </button>
+          <button
+            onClick={() => setActiveTab('workouts')}
+            className={`pb-2 px-1 font-medium transition-colors ${
+              activeTab === 'workouts'
+                ? 'text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            }`}
           >
-            Read our docs
-          </a>
+            Workouts
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="mb-6">
+          {activeTab === 'exercises' ? (
+            !showForm && !showImport ? (
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  + Add Exercise
+                </button>
+                <button
+                  onClick={() => setShowImport(true)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                  📁 Import Exercises
+                </button>
+              </div>
+            ) : showForm ? (
+              <ExerciseForm
+                onSubmit={handleAddExercise}
+                onCancel={() => setShowForm(false)}
+              />
+            ) : (
+              <ImportExercises
+                onImport={handleImportExercises}
+                onCancel={() => setShowImport(false)}
+              />
+            )
+          ) : (
+            !showWorkoutForm ? (
+              <button
+                onClick={() => setShowWorkoutForm(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                + Create Workout
+              </button>
+            ) : (
+              <WorkoutForm
+                onSubmit={handleAddWorkout}
+                onCancel={() => setShowWorkoutForm(false)}
+              />
+            )
+          )}
+        </div>
+
+        <div>
+          {activeTab === 'exercises' ? (
+            <>
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                Exercise History
+              </h2>
+              <ExerciseList exercises={exercises} onDelete={handleDeleteExercise} />
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                Workouts & Templates
+              </h2>
+              <WorkoutList 
+                workouts={workouts} 
+                onDelete={handleDeleteWorkout}
+                onStartWorkout={handleStartWorkout}
+              />
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

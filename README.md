@@ -122,7 +122,7 @@ make format        # Format code with Prettier (if installed)
 
 ## Project Structure
 
-```
+```sh
 exercise-tracker/
 ├── app/                    # Next.js app directory
 │   ├── layout.tsx         # Root layout
