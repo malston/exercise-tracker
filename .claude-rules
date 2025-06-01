@@ -1,0 +1,300 @@
+# Claude Code Project Instructions
+
+## Project Overview
+
+This is a full-stack web application for exercise tracking built with modern technologies. The goal is to build complete, production-ready features with proper error handling, type safety, and best practices.
+
+## Tech Stack
+
+**Frontend:**
+- Next.js (App Router)
+- Tailwind CSS
+- Shadcn/ui components
+- Framer Motion for animations
+- Lucide React for icons
+
+**Backend:**
+- PostgreSQL database
+- Supabase for backend services and storage
+- Drizzle ORM for database operations
+- Next.js Server Actions for API logic
+
+**Authentication & Payments:**
+- Clerk for authentication
+- Stripe for payment processing
+
+**Deployment:**
+- Vercel for hosting
+
+## Project Structure
+
+```
+├── actions/              # Server actions
+│   ├── db/              # Database-related actions
+│   └── storage/         # File storage actions
+├── app/                 # Next.js app router
+│   ├── api/            # API routes
+│   └── [routes]/       # Application routes
+│       ├── _components/ # Route-specific components
+│       ├── layout.tsx  # Route layout
+│       └── page.tsx    # Route page
+├── components/          # Shared components
+│   ├── ui/             # Shadcn UI components
+│   └── utilities/      # Utility components
+├── db/                 # Database configuration
+│   └── schema/         # Database schemas
+├── lib/                # Library code
+│   └── hooks/          # Custom React hooks
+├── types/              # TypeScript type definitions
+├── public/             # Static assets
+└── prompts/            # AI prompt files
+```
+
+## Development Guidelines
+
+### Code Quality Standards
+
+1. **Completeness**: Write complete, functional code for every feature. No placeholders or incomplete implementations.
+
+2. **Type Safety**: Use TypeScript throughout with proper type definitions and interfaces.
+
+3. **Error Handling**: Implement comprehensive error handling with meaningful error messages.
+
+4. **Performance**: Write efficient code with proper loading states and optimizations.
+
+### File and Folder Conventions
+
+- Use kebab-case for all files and folders
+- Component files: `example-component.tsx`
+- Schema files: `example-schema.ts`
+- Action files: `example-actions.ts`
+- Type files: `example-types.ts`
+
+### Import Conventions
+
+- Use `@/` for absolute imports from the project root
+- Import types from `@/types`
+- Import schemas from `@/db/schema`
+- Import actions from `@/actions` or `@/actions/db`
+
+## Frontend Development
+
+### Component Architecture
+
+**Server Components:**
+- Add `"use server"` directive at the top
+- Handle data fetching and pass data as props to client components
+- Use Suspense boundaries for async operations
+- Await params in server pages: `const { id } = await params`
+
+```tsx
+"use server"
+
+import { Suspense } from "react"
+import { getExerciseAction } from "@/actions/db/exercise-actions"
+import ExerciseComponent from "./_components/exercise-component"
+import ExerciseSkeleton from "./_components/exercise-skeleton"
+
+export default async function ExercisePage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  return (
+    <Suspense fallback={<ExerciseSkeleton />}>
+      <ExerciseFetcher params={params} />
+    </Suspense>
+  )
+}
+
+async function ExerciseFetcher({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  const { id } = await params
+  const { data } = await getExerciseAction(id)
+  return <ExerciseComponent initialData={data || []} />
+}
+```
+
+**Client Components:**
+- Add `"use client"` directive at the top
+- Handle user interactions and client-side state
+- Receive data via props from server components
+- Use server actions for data mutations (imported from `/actions`)
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { createExerciseAction } from "@/actions/db/exercise-actions"
+
+interface ExerciseFormProps {
+  initialData: Exercise[]
+}
+
+export default function ExerciseForm({ initialData }: ExerciseFormProps) {
+  const [exercises, setExercises] = useState(initialData)
+  
+  // Client-side logic here
+  return <div>{exercises.length} exercises</div>
+}
+```
+
+### UI Guidelines
+
+- Use divs instead of semantic HTML unless specifically needed
+- Separate main component sections with blank lines for readability
+- Use Lucide React for all icons
+- Follow Shadcn/ui patterns for consistent styling
+- Implement proper loading states and error boundaries
+
+## Backend Development
+
+### Database Schema Design
+
+**Schema Files (`db/schema/`):**
+- Export schemas in `db/schema/index.ts`
+- Add schemas to the schema object in `db/db.ts`
+- Always include `createdAt` and `updatedAt` timestamps
+- Use `userId: text("user_id").notNull()` for user references
+- Implement proper cascade deletes for relationships
+
+```ts
+// db/schema/exercises-schema.ts
+import { pgTable, text, timestamp, uuid, integer } from "drizzle-orm/pg-core"
+
+export const exercisesTable = pgTable("exercises", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id").notNull(),
+  name: text("name").notNull(),
+  sets: integer("sets").notNull(),
+  reps: integer("reps").notNull(),
+  weight: integer("weight"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date())
+})
+
+export type InsertExercise = typeof exercisesTable.$inferInsert
+export type SelectExercise = typeof exercisesTable.$inferSelect
+```
+
+### Server Actions
+
+**Action Files (`actions/db/`):**
+- Return `ActionState<T>` type for consistent error handling
+- Include "Action" suffix in function names: `createExerciseAction`
+- Organize in CRUD order: Create, Read, Update, Delete
+- Handle date conversions using `.toISOString()` for date string types
+
+```ts
+// actions/db/exercise-actions.ts
+"use server"
+
+import { db } from "@/db/db"
+import { InsertExercise, SelectExercise, exercisesTable } from "@/db/schema"
+import { ActionState } from "@/types"
+import { eq } from "drizzle-orm"
+
+export async function createExerciseAction(
+  exercise: InsertExercise
+): Promise<ActionState<SelectExercise>> {
+  try {
+    const [newExercise] = await db
+      .insert(exercisesTable)
+      .values(exercise)
+      .returning()
+    
+    return {
+      isSuccess: true,
+      message: "Exercise created successfully",
+      data: newExercise
+    }
+  } catch (error) {
+    console.error("Error creating exercise:", error)
+    return { isSuccess: false, message: "Failed to create exercise" }
+  }
+}
+```
+
+### Type Definitions
+
+**Type Files (`types/`):**
+- Export all types in `types/index.ts`
+- Prefer interfaces over type aliases
+- Use consistent naming patterns
+
+```ts
+// types/actions-types.ts
+export type ActionState<T> =
+  | { isSuccess: true; message: string; data: T }
+  | { isSuccess: false; message: string; data?: never }
+
+// types/exercise-types.ts
+export interface ExerciseFilters {
+  userId: string
+  dateRange?: {
+    start: Date
+    end: Date
+  }
+  exerciseType?: string
+}
+```
+
+## Authentication (Clerk)
+
+- Import auth helper: `import { auth } from "@clerk/nextjs/server"`
+- Always await the auth helper in server actions
+- Implement proper user session management
+- Handle authentication states in components
+
+## File Storage (Supabase)
+
+### Storage Organization
+- Use environment variables for bucket names
+- Structure files: `{bucket}/{userId}/{purpose}/{filename}`
+- Implement proper RLS policies for security
+- Handle file validation (size, type) before upload
+
+### Storage Actions
+- Include "Storage" suffix: `uploadFileStorage`
+- Follow ActionState pattern for consistency
+- Implement proper error handling and cleanup
+
+## Environment Variables
+
+- Update `.env.example` when adding new variables
+- Use `.env.local` for actual environment values
+- Never expose secrets to frontend
+- Use `NEXT_PUBLIC_` prefix only when frontend access is required
+
+## Security Best Practices
+
+1. **Database**: Implement proper user authorization checks in all actions
+2. **File Storage**: Use RLS policies and validate user ownership
+3. **API**: Validate all inputs and implement rate limiting where needed
+4. **Authentication**: Check user sessions before sensitive operations
+
+## Testing and Quality Assurance
+
+- Test all CRUD operations thoroughly
+- Verify proper error handling and edge cases
+- Ensure responsive design across devices
+- Validate form inputs and provide clear feedback
+- Test authentication flows and protected routes
+
+## Deployment Considerations
+
+- Ensure all environment variables are configured in Vercel
+- Test database migrations in staging environment
+- Configure proper CORS policies for Supabase
+- Set up monitoring and error tracking
+- Implement proper logging for debugging
+
+---
+
+**Remember**: Write complete, production-ready code for every feature. Focus on user experience, performance, and maintainability. Always implement proper error handling and loading states.
