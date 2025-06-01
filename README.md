@@ -181,11 +181,14 @@ make start
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We love your input! We want to make contributing to Exercise Tracker as easy and transparent as possible. Please read our [Contributing Guidelines](CONTRIBUTING.md) to get started.
+
+Quick links:
+- 📋 [Contributing Guidelines](CONTRIBUTING.md)
+- 🤝 [Code of Conduct](CODE_OF_CONDUCT.md)
+- 💻 [Development Guide](docs/DEVELOPMENT.md)
+- 🐛 [Report a Bug](.github/ISSUE_TEMPLATE/bug_report.md)
+- ✨ [Request a Feature](.github/ISSUE_TEMPLATE/feature_request.md)
 
 ## License
 
